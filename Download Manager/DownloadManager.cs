@@ -104,12 +104,12 @@ namespace Download_Manager
                 {
                     using (Stream responseStream = httpWebResponse.GetResponseStream())
                     {
-                        if (!Directory.Exists("Temp\\" + fileInformation.name))
+                        if (!Directory.Exists(fileInformation.saveTo + "\\Temp\\" + fileInformation.name))
                         {
-                            Directory.CreateDirectory("Temp\\" + fileInformation.name);
+                            Directory.CreateDirectory(fileInformation.saveTo + "\\Temp\\" + fileInformation.name);
                         }
 
-                        using (FileStream fileStream = new FileStream("Temp\\" + fileInformation.name + "\\" + (indx + 1), fileMode, FileAccess.Write, FileShare.None))
+                        using (FileStream fileStream = new FileStream(fileInformation.saveTo + "\\Temp\\" + fileInformation.name + "\\" + (indx + 1), fileMode, FileAccess.Write, FileShare.None))
                         {
                             while ((bytesRead = responseStream.Read(buffer, 0, buffer.Length)) > 0)
                             {
@@ -165,7 +165,7 @@ namespace Download_Manager
             {
                 for (int i = 0; i < Form.DefaultConnectionLimit; i++)
                 {
-                    using (FileStream fileInputStream = new FileStream("Temp\\" + fileInformation.name + "\\" + (i + 1), FileMode.Open, FileAccess.Read))
+                    using (FileStream fileInputStream = new FileStream(fileInformation.saveTo + "\\Temp\\" + fileInformation.name + "\\" + (i + 1), FileMode.Open, FileAccess.Read))
                     {
                         while ((bytesRead = fileInputStream.Read(buffer, 0, buffer.Length)) != 0)
                         {
@@ -180,9 +180,9 @@ namespace Download_Manager
                 }
             }
 
-            if (Directory.Exists("Temp\\" + fileInformation.name))
+            if (Directory.Exists(fileInformation.saveTo + "\\Temp\\" + fileInformation.name))
             {
-                Directory.Delete("Temp\\" + fileInformation.name, true);
+                Directory.Delete(fileInformation.saveTo + "\\Temp\\" + fileInformation.name, true);
             }
         }
 

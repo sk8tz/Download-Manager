@@ -10,20 +10,7 @@ namespace Download_Manager
 {
     public partial class Form : System.Windows.Forms.Form
     {
-        private static int _DefaultConnectionLimit = ServicePointManager.DefaultConnectionLimit;    // initializing...
-
-        public static int DefaultConnectionLimit
-        {
-            get
-            {
-                return _DefaultConnectionLimit;
-            }
-            set
-            {
-                ServicePointManager.DefaultConnectionLimit = _DefaultConnectionLimit = value;
-            }
-        }
-
+        public static int DefaultConnectionLimit = 8;
         private static readonly object[] segments = { 1, 2, 4, 8, 16, 24, 32 };
 
         private static FileInformation fileInformation;
@@ -37,6 +24,8 @@ namespace Download_Manager
         {
             if (sender.Equals(this))
             {
+                ServicePointManager.DefaultConnectionLimit = 32;        // maximum number of connections allowed...
+
                 if (ServicePointManager.Expect100Continue)
                 {
                     ServicePointManager.Expect100Continue = false;

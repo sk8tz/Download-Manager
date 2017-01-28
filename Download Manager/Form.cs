@@ -10,7 +10,7 @@ namespace Download_Manager
 {
     public partial class Form : System.Windows.Forms.Form
     {
-        public static int DefaultConnectionLimit = 8;
+        public static int countSegments = 8;
         private static readonly object[] segments = { 1, 2, 4, 8, 16, 24, 32 };
 
         private static FileInformation fileInformation;
@@ -89,13 +89,20 @@ namespace Download_Manager
 
                 textBoxSaveTo.ForeColor = color;
             }
+            else if (sender.Equals(textBoxFileName))
+            {
+                if (fileInformation != null)
+                {
+                    fileInformation.name = textBoxFileName.Text;
+                }
+            }
         }
 
         private void ComboBoxSelectedIndexChanged(object sender, EventArgs e)
         {
             if (sender.Equals(comboBoxSegments))
             {
-                DefaultConnectionLimit = int.Parse(segments[comboBoxSegments.SelectedIndex].ToString());
+                countSegments = int.Parse(segments[comboBoxSegments.SelectedIndex].ToString());
             }
         }
 

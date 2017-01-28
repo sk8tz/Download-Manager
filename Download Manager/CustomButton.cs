@@ -5,19 +5,19 @@ namespace Download_Manager
 {
     public class CustomButton : Button
     {
-        private bool active = true;
+        private bool _Active = true;
         
         public bool Active
         {
             get
             {
-                return active;
+                return _Active;
             }
             set
             {
-                active = value;
+                _Active = value;
 
-                if (active)
+                if (_Active)
                 {
                     FlatAppearance.BorderColor = FlatAppearance.MouseDownBackColor = Color.DodgerBlue;
                     FlatAppearance.MouseOverBackColor = CUSTOM_GRAYS[0];

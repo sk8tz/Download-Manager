@@ -49,21 +49,21 @@
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.labelTimeElapsed = new System.Windows.Forms.Label();
             this._labelTimeElapsed = new System.Windows.Forms.Label();
+            this.textBoxFileName = new System.Windows.Forms.TextBox();
             this.buttonPaste = new Download_Manager.CustomButton();
             this.buttonBrowse = new Download_Manager.CustomButton();
             this.buttonPause = new Download_Manager.CustomButton();
             this.buttonStart = new Download_Manager.CustomButton();
-            this.textBoxFileName = new System.Windows.Forms.TextBox();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // textBoxDownloadLink
             // 
             this.textBoxDownloadLink.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxDownloadLink.Location = new System.Drawing.Point(133, 78);
+            this.textBoxDownloadLink.Location = new System.Drawing.Point(121, 78);
             this.textBoxDownloadLink.Name = "textBoxDownloadLink";
             this.textBoxDownloadLink.ReadOnly = true;
-            this.textBoxDownloadLink.Size = new System.Drawing.Size(258, 22);
+            this.textBoxDownloadLink.Size = new System.Drawing.Size(270, 22);
             this.textBoxDownloadLink.TabIndex = 6;
             // 
             // textBoxSaveTo
@@ -71,9 +71,9 @@
             this.textBoxSaveTo.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.textBoxSaveTo.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.FileSystemDirectories;
             this.textBoxSaveTo.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxSaveTo.Location = new System.Drawing.Point(133, 12);
+            this.textBoxSaveTo.Location = new System.Drawing.Point(121, 12);
             this.textBoxSaveTo.Name = "textBoxSaveTo";
-            this.textBoxSaveTo.Size = new System.Drawing.Size(258, 22);
+            this.textBoxSaveTo.Size = new System.Drawing.Size(270, 22);
             this.textBoxSaveTo.TabIndex = 1;
             this.textBoxSaveTo.Text = "F:\\Test";
             this.textBoxSaveTo.TextChanged += new System.EventHandler(this.TextBoxTextChanged);
@@ -92,22 +92,22 @@
             // labelDownloadLink
             // 
             this.labelDownloadLink.AutoSize = true;
-            this.labelDownloadLink.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelDownloadLink.ForeColor = System.Drawing.Color.DodgerBlue;
-            this.labelDownloadLink.Location = new System.Drawing.Point(12, 81);
+            this.labelDownloadLink.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelDownloadLink.ForeColor = System.Drawing.Color.LightGray;
+            this.labelDownloadLink.Location = new System.Drawing.Point(12, 82);
             this.labelDownloadLink.Name = "labelDownloadLink";
-            this.labelDownloadLink.Size = new System.Drawing.Size(88, 16);
+            this.labelDownloadLink.Size = new System.Drawing.Size(86, 15);
             this.labelDownloadLink.TabIndex = 5;
             this.labelDownloadLink.Text = "Download link";
             // 
             // labelSaveTo
             // 
             this.labelSaveTo.AutoSize = true;
-            this.labelSaveTo.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelSaveTo.ForeColor = System.Drawing.Color.DodgerBlue;
-            this.labelSaveTo.Location = new System.Drawing.Point(12, 15);
+            this.labelSaveTo.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelSaveTo.ForeColor = System.Drawing.Color.LightGray;
+            this.labelSaveTo.Location = new System.Drawing.Point(12, 16);
             this.labelSaveTo.Name = "labelSaveTo";
-            this.labelSaveTo.Size = new System.Drawing.Size(51, 16);
+            this.labelSaveTo.Size = new System.Drawing.Size(49, 15);
             this.labelSaveTo.TabIndex = 0;
             this.labelSaveTo.Text = "Save to";
             // 
@@ -135,7 +135,7 @@
             // labelEmpty
             // 
             this.labelEmpty.Name = "labelEmpty";
-            this.labelEmpty.Size = new System.Drawing.Size(301, 17);
+            this.labelEmpty.Size = new System.Drawing.Size(332, 17);
             this.labelEmpty.Spring = true;
             // 
             // progressBarStatus
@@ -146,22 +146,22 @@
             // labelFileName
             // 
             this.labelFileName.AutoSize = true;
-            this.labelFileName.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelFileName.ForeColor = System.Drawing.Color.DodgerBlue;
-            this.labelFileName.Location = new System.Drawing.Point(12, 113);
+            this.labelFileName.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelFileName.ForeColor = System.Drawing.Color.LightGray;
+            this.labelFileName.Location = new System.Drawing.Point(12, 114);
             this.labelFileName.Name = "labelFileName";
-            this.labelFileName.Size = new System.Drawing.Size(65, 16);
+            this.labelFileName.Size = new System.Drawing.Size(61, 15);
             this.labelFileName.TabIndex = 8;
             this.labelFileName.Text = "File name";
             // 
             // _labelSpeed
             // 
             this._labelSpeed.AutoSize = true;
-            this._labelSpeed.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this._labelSpeed.ForeColor = System.Drawing.Color.DodgerBlue;
-            this._labelSpeed.Location = new System.Drawing.Point(12, 142);
+            this._labelSpeed.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this._labelSpeed.ForeColor = System.Drawing.Color.LightGray;
+            this._labelSpeed.Location = new System.Drawing.Point(12, 143);
             this._labelSpeed.Name = "_labelSpeed";
-            this._labelSpeed.Size = new System.Drawing.Size(45, 16);
+            this._labelSpeed.Size = new System.Drawing.Size(43, 15);
             this._labelSpeed.TabIndex = 10;
             this._labelSpeed.Text = "Speed";
             // 
@@ -170,7 +170,7 @@
             this.labelSpeed.AutoSize = true;
             this.labelSpeed.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelSpeed.ForeColor = System.Drawing.Color.White;
-            this.labelSpeed.Location = new System.Drawing.Point(130, 142);
+            this.labelSpeed.Location = new System.Drawing.Point(118, 142);
             this.labelSpeed.Name = "labelSpeed";
             this.labelSpeed.Size = new System.Drawing.Size(83, 16);
             this.labelSpeed.TabIndex = 11;
@@ -181,7 +181,7 @@
             this.labelReceived.AutoSize = true;
             this.labelReceived.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelReceived.ForeColor = System.Drawing.Color.White;
-            this.labelReceived.Location = new System.Drawing.Point(130, 168);
+            this.labelReceived.Location = new System.Drawing.Point(118, 168);
             this.labelReceived.Name = "labelReceived";
             this.labelReceived.Size = new System.Drawing.Size(154, 16);
             this.labelReceived.TabIndex = 13;
@@ -190,11 +190,11 @@
             // _labelReceived
             // 
             this._labelReceived.AutoSize = true;
-            this._labelReceived.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this._labelReceived.ForeColor = System.Drawing.Color.DodgerBlue;
-            this._labelReceived.Location = new System.Drawing.Point(12, 168);
+            this._labelReceived.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this._labelReceived.ForeColor = System.Drawing.Color.LightGray;
+            this._labelReceived.Location = new System.Drawing.Point(12, 169);
             this._labelReceived.Name = "_labelReceived";
-            this._labelReceived.Size = new System.Drawing.Size(60, 16);
+            this._labelReceived.Size = new System.Drawing.Size(59, 15);
             this._labelReceived.TabIndex = 12;
             this._labelReceived.Text = "Received";
             // 
@@ -203,20 +203,20 @@
             this.comboBoxSegments.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxSegments.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBoxSegments.FormattingEnabled = true;
-            this.comboBoxSegments.Location = new System.Drawing.Point(133, 44);
+            this.comboBoxSegments.Location = new System.Drawing.Point(121, 44);
             this.comboBoxSegments.Name = "comboBoxSegments";
-            this.comboBoxSegments.Size = new System.Drawing.Size(349, 24);
+            this.comboBoxSegments.Size = new System.Drawing.Size(361, 24);
             this.comboBoxSegments.TabIndex = 4;
             this.comboBoxSegments.SelectedIndexChanged += new System.EventHandler(this.ComboBoxSelectedIndexChanged);
             // 
             // labelSegments
             // 
             this.labelSegments.AutoSize = true;
-            this.labelSegments.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelSegments.ForeColor = System.Drawing.Color.DodgerBlue;
-            this.labelSegments.Location = new System.Drawing.Point(12, 47);
+            this.labelSegments.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelSegments.ForeColor = System.Drawing.Color.LightGray;
+            this.labelSegments.Location = new System.Drawing.Point(12, 49);
             this.labelSegments.Name = "labelSegments";
-            this.labelSegments.Size = new System.Drawing.Size(67, 16);
+            this.labelSegments.Size = new System.Drawing.Size(65, 15);
             this.labelSegments.TabIndex = 3;
             this.labelSegments.Text = "Segments";
             // 
@@ -229,7 +229,7 @@
             this.labelTimeElapsed.AutoSize = true;
             this.labelTimeElapsed.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelTimeElapsed.ForeColor = System.Drawing.Color.White;
-            this.labelTimeElapsed.Location = new System.Drawing.Point(130, 194);
+            this.labelTimeElapsed.Location = new System.Drawing.Point(118, 194);
             this.labelTimeElapsed.Name = "labelTimeElapsed";
             this.labelTimeElapsed.Size = new System.Drawing.Size(76, 16);
             this.labelTimeElapsed.TabIndex = 15;
@@ -238,13 +238,22 @@
             // _labelTimeElapsed
             // 
             this._labelTimeElapsed.AutoSize = true;
-            this._labelTimeElapsed.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this._labelTimeElapsed.ForeColor = System.Drawing.Color.DodgerBlue;
-            this._labelTimeElapsed.Location = new System.Drawing.Point(12, 194);
+            this._labelTimeElapsed.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this._labelTimeElapsed.ForeColor = System.Drawing.Color.LightGray;
+            this._labelTimeElapsed.Location = new System.Drawing.Point(12, 195);
             this._labelTimeElapsed.Name = "_labelTimeElapsed";
-            this._labelTimeElapsed.Size = new System.Drawing.Size(85, 16);
+            this._labelTimeElapsed.Size = new System.Drawing.Size(83, 15);
             this._labelTimeElapsed.TabIndex = 14;
             this._labelTimeElapsed.Text = "Time elapsed";
+            // 
+            // textBoxFileName
+            // 
+            this.textBoxFileName.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBoxFileName.Location = new System.Drawing.Point(121, 110);
+            this.textBoxFileName.Name = "textBoxFileName";
+            this.textBoxFileName.Size = new System.Drawing.Size(361, 22);
+            this.textBoxFileName.TabIndex = 9;
+            this.textBoxFileName.TextChanged += new System.EventHandler(this.TextBoxTextChanged);
             // 
             // buttonPaste
             // 
@@ -298,6 +307,7 @@
             this.buttonPause.TabIndex = 17;
             this.buttonPause.Text = "Pause";
             this.buttonPause.UseVisualStyleBackColor = false;
+            this.buttonPause.Click += new System.EventHandler(this.ButtonClick);
             // 
             // buttonStart
             // 
@@ -316,14 +326,6 @@
             this.buttonStart.Text = "Start";
             this.buttonStart.UseVisualStyleBackColor = false;
             this.buttonStart.Click += new System.EventHandler(this.ButtonClick);
-            // 
-            // textBoxFileName
-            // 
-            this.textBoxFileName.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxFileName.Location = new System.Drawing.Point(133, 110);
-            this.textBoxFileName.Name = "textBoxFileName";
-            this.textBoxFileName.Size = new System.Drawing.Size(349, 22);
-            this.textBoxFileName.TabIndex = 9;
             // 
             // Form
             // 
@@ -375,8 +377,11 @@
         private System.Windows.Forms.Label labelSpeed;
         private System.Windows.Forms.Label _labelReceived;
         private System.Windows.Forms.Label labelReceived;
-        private System.Windows.Forms.TextBox textBoxDownloadLink;
+        private System.Windows.Forms.Label _labelTimeElapsed;
+        private System.Windows.Forms.Label labelTimeElapsed;
         private System.Windows.Forms.TextBox textBoxSaveTo;
+        private System.Windows.Forms.TextBox textBoxDownloadLink;
+        private System.Windows.Forms.TextBox textBoxFileName;
         private System.Windows.Forms.ComboBox comboBoxSegments;
         private CustomButton buttonPaste;
         private CustomButton buttonBrowse;
@@ -387,10 +392,7 @@
         private System.Windows.Forms.ToolStripStatusLabel labelStatus;
         private System.Windows.Forms.ToolStripStatusLabel labelEmpty;
         private System.Windows.Forms.ToolStripProgressBar progressBarStatus;
-        private System.ComponentModel.BackgroundWorker backgroundWorker;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
-        private System.Windows.Forms.Label labelTimeElapsed;
-        private System.Windows.Forms.Label _labelTimeElapsed;
-        private System.Windows.Forms.TextBox textBoxFileName;
+        private System.ComponentModel.BackgroundWorker backgroundWorker;
     }
 }

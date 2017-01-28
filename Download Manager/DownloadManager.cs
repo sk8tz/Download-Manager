@@ -11,13 +11,14 @@ namespace Download_Manager
     public class DownloadManager
     {
         private long totalBytesRead = 0;
-        private long[] segmentsRangesTo = new long[Form.DefaultConnectionLimit];
         private static readonly string userAgent = "Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2224.3 Safari/537.36";
 
         private FileMode fileMode = FileMode.Create;
 
         private FileInformation fileInformation;
         private ToolStripProgressBar progressBarStatus;
+        private Segment[] segments;
+        private Thread[] threads;
         private static readonly Regex regexURL = new Regex("(\\w+):\\/\\/([\\w.]+\\/?)\\S*"), regexFileName = new Regex("attachment;filename=(?<filename>.*)");
 
         public DownloadManager(FileInformation fileInformation, ToolStripProgressBar progressBarStatus)
@@ -25,83 +26,41 @@ namespace Download_Manager
             this.fileInformation = fileInformation;
             this.progressBarStatus = progressBarStatus;
 
-            CalculateSegments(Form.DefaultConnectionLimit, fileInformation.contentLength);
-        }
-
-        private void CalculateSegments(int segments, long contentLength)
-        {
-            segmentsRangesTo[0] = contentLength / segments;
-            
-            for (int i = 1; i < segmentsRangesTo.Length - 1; i++)
-            {
-                segmentsRangesTo[i] = (i + 1) * segmentsRangesTo[0];
-            }
-            
-            segmentsRangesTo[segmentsRangesTo.Length - 1] = contentLength;
+            segments = Segment.CalculateSegments(Form.countSegments, fileInformation.contentLength);
         }
 
         private void UpdateProgress(long totalBytesRead, long contentLength)
         {
             Action action;
-
-            try
+            
+            progressBarStatus.ProgressBar.Parent.Invoke(action = () =>
             {
-                progressBarStatus.ProgressBar.Parent.Invoke(action = () =>
+                try
                 {
                     progressBarStatus.Value = Convert.ToInt32((totalBytesRead * 100) / contentLength);
-                });
-            }
-            catch
-            {
+                }
+                catch
+                {
 
-            }
+                }
+            });
         }
 
-        public void Start(object index)
+        public void Start(object _index)
         {
-            int indx = (int)index;
+            int index = (int)_index;
 
             byte[] buffer = new byte[524288];
             int bytesRead;
 
-            long rF, rT;
-
-            if (indx == 0)
-            {
-                rF = 0;
-                rT = segmentsRangesTo[indx];
-            }
-            else
-            {
-                rF = segmentsRangesTo[indx - 1] + 1;
-                rT = segmentsRangesTo[indx];
-            }
-
-            /*if (File.Exists("Temp//" + (indx + 1)))
-            {
-                rF += new FileInfo("Temp//" + (indx + 1)).Length;
-                fileMode = FileMode.Append;
-            }
-
-            if (rF >= rT)
-            {
-                totalBytesRead += new FileInfo("Temp//" + (indx + 1)).Length;
-                Debugger.Log(0, "WebException", "Complete... ");
-
-                if (totalBytesRead == fileInformation.contentLength)
-                {
-                    AppendSegments();
-                }
-
-                return;
-            }*/
-
-            HttpWebRequest httpWebRequest = GetHttpWebRequest(rF, rT, fileInformation.downloadLink);
-
+            HttpWebRequest httpWebRequest = GetHttpWebRequest(segments[index].StartPoint, segments[index].EndPoint, fileInformation.downloadLink);
+            
             try
             {
                 using (HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse())
                 {
+                    Debugger.Log(10, "test", "\n" + index + ") Size = " + httpWebResponse.ContentLength + "\nStart = " + segments[index].StartPoint + "\nEND = " + segments[index].EndPoint + "\nTotal Size = " + fileInformation.contentLength + "\n\n");
+
                     using (Stream responseStream = httpWebResponse.GetResponseStream())
                     {
                         if (!Directory.Exists(fileInformation.saveTo + "\\Temp\\" + fileInformation.name))
@@ -109,7 +68,7 @@ namespace Download_Manager
                             Directory.CreateDirectory(fileInformation.saveTo + "\\Temp\\" + fileInformation.name);
                         }
 
-                        using (FileStream fileStream = new FileStream(fileInformation.saveTo + "\\Temp\\" + fileInformation.name + "\\" + (indx + 1), fileMode, FileAccess.Write, FileShare.None))
+                        using (FileStream fileStream = new FileStream(fileInformation.saveTo + "\\Temp\\" + fileInformation.name + "\\" + (index + 1), fileMode, FileAccess.Write, FileShare.None))
                         {
                             while ((bytesRead = responseStream.Read(buffer, 0, buffer.Length)) > 0)
                             {
@@ -117,6 +76,8 @@ namespace Download_Manager
 
                                 fileStream.Write(buffer, 0, bytesRead);
                                 UpdateProgress(totalBytesRead, fileInformation.contentLength);
+
+                                Thread.Sleep(segments.Length);
                             }
                         }
                     }
@@ -124,30 +85,21 @@ namespace Download_Manager
             }
             catch (WebException webException)
             {
-                Debugger.Log(0, "WebException", indx + "RESTARTED... " + webException.Message);
-
-                Thread.Sleep(1000*60);
-
-                Start(indx);
+                Debugger.Log(0, "WebException", index + ") " + webException.Message);
             }
 
-            threads[indx] = null;
+            threads[index] = null;
 
-            Debugger.Log(0, "WebException", "total = " + totalBytesRead + "\nLen = " + fileInformation.contentLength);
+            Debugger.Log(0, "WebException", "total = " + totalBytesRead + "\nLen = " + fileInformation.contentLength + "\nDifference = " + (fileInformation.contentLength - totalBytesRead));
 
-            if (totalBytesRead == fileInformation.contentLength)
-            {
-                AppendSegments();
-            }
+            AppendSegments();
         }
-
-        private volatile Thread[] threads;
 
         public void Start()
         {
-            threads = new Thread[Form.DefaultConnectionLimit];
+            threads = new Thread[segments.Length];
 
-            for (int i = 0; i < Form.DefaultConnectionLimit; i++)
+            for (int i = 0; i < threads.Length; i++)
             {
                 threads[i] = new Thread(new ParameterizedThreadStart(Start));
                 threads[i].Start(i);
@@ -156,6 +108,21 @@ namespace Download_Manager
 
         private void AppendSegments()
         {
+            int countCompletedThreads = 0;
+
+            for (int i = 0; i < threads.Length; i++)       // checking if all threads have finished downloading...
+            {
+                if (threads[i] == null)
+                {
+                    countCompletedThreads++;
+                }
+            }
+
+            if (countCompletedThreads != threads.Length)
+            {
+                return;
+            }
+
             byte[] buffer = new byte[524288];
             int bytesRead;
 
@@ -163,7 +130,7 @@ namespace Download_Manager
 
             using (FileStream fileOutputStream = new FileStream(fileInformation.saveTo + "\\" + fileInformation.name, FileMode.Append, FileAccess.Write))
             {
-                for (int i = 0; i < Form.DefaultConnectionLimit; i++)
+                for (int i = 0; i < segments.Length; i++)
                 {
                     using (FileStream fileInputStream = new FileStream(fileInformation.saveTo + "\\Temp\\" + fileInformation.name + "\\" + (i + 1), FileMode.Open, FileAccess.Read))
                     {

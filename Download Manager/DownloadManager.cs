@@ -10,103 +10,129 @@ namespace Download_Manager
 {
     public class DownloadManager
     {
+        private byte[] buffer = new byte[524288];       // 5*1024 KB = 512 KB...
+        private int bytesRead;
         private long totalBytesRead = 0;
         private static readonly string userAgent = "Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2224.3 Safari/537.36";
+        private string[] paths = new string[2];         // paths[0] = temporary download path and, paths[1] = actual download path...
 
         private FileMode fileMode = FileMode.Create;
 
         private FileInformation fileInformation;
-        private ToolStripProgressBar progressBarStatus;
+        private Controls controls;
         private Segment[] segments;
         private Thread[] threads;
         private static readonly Regex regexURL = new Regex("(\\w+):\\/\\/([\\w.]+\\/?)\\S*"), regexFileName = new Regex("attachment;filename=(?<filename>.*)");
 
-        public DownloadManager(FileInformation fileInformation, ToolStripProgressBar progressBarStatus)
+        public DownloadManager(FileInformation fileInformation, Controls controls)
         {
             this.fileInformation = fileInformation;
-            this.progressBarStatus = progressBarStatus;
+            this.controls = controls;
+
+            paths[0] = fileInformation.saveTo + "\\Temporary Files\\" + fileInformation.name;
+            paths[1] = fileInformation.saveTo + "\\" + fileInformation.name;
 
             segments = Segment.CalculateSegments(Form.countSegments, fileInformation.contentLength);
         }
 
-        private void UpdateProgress(long totalBytesRead, long contentLength)
+        public void UpdateReceived(long totalBytesRead)
         {
-            Action action;
-            
-            progressBarStatus.ProgressBar.Parent.Invoke(action = () =>
-            {
-                try
-                {
-                    progressBarStatus.Value = Convert.ToInt32((totalBytesRead * 100) / contentLength);
-                }
-                catch
-                {
-
-                }
-            });
+            controls.UpdateReceived(FileInformation.FormatSize(totalBytesRead) + " of " + fileInformation.size);
         }
 
-        public void Start(object _index)
+        private void UpdateProgressBarValue(long totalBytesRead, long contentLength)
         {
-            int index = (int)_index;
+            controls.UpdateProgressBarValue(Convert.ToInt32((totalBytesRead * 100) / contentLength));
+        }
 
-            byte[] buffer = new byte[524288];
-            int bytesRead;
+        private void UpdateProgressBarStatusValue(long totalBytesRead, long contentLength)
+        {
+            controls.UpdateProgressBarStatusValue(Convert.ToInt32((totalBytesRead * 100) / contentLength));
+        }
 
-            HttpWebRequest httpWebRequest = GetHttpWebRequest(segments[index].StartPoint, segments[index].EndPoint, fileInformation.downloadLink);
+        public void Start(object _index)        // the exception handling procedure will be changed...
+        {
+            byte[] buffer = new byte[524288];       // 5*1024 KB = 512 KB...
+            int index = (int)_index, bytesRead;
+
+            HttpWebRequest httpWebRequest;
+
+            try
+            {
+                httpWebRequest = GetHttpWebRequest(segments[index].StartPoint, segments[index].EndPoint, fileInformation.downloadLink);
+            }
+            catch (Exception exception)
+            {
+                throw exception;
+            }
             
             try
             {
                 using (HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse())
                 {
-                    Debugger.Log(10, "test", "\n" + index + ") Size = " + httpWebResponse.ContentLength + "\nStart = " + segments[index].StartPoint + "\nEND = " + segments[index].EndPoint + "\nTotal Size = " + fileInformation.contentLength + "\n\n");
-
                     using (Stream responseStream = httpWebResponse.GetResponseStream())
                     {
-                        if (!Directory.Exists(fileInformation.saveTo + "\\Temp\\" + fileInformation.name))
+                        if (!Directory.Exists(paths[0]))
                         {
-                            Directory.CreateDirectory(fileInformation.saveTo + "\\Temp\\" + fileInformation.name);
+                            Directory.CreateDirectory(paths[0]);
                         }
 
-                        using (FileStream fileStream = new FileStream(fileInformation.saveTo + "\\Temp\\" + fileInformation.name + "\\" + (index + 1), fileMode, FileAccess.Write, FileShare.None))
+                        using (FileStream fileStream = new FileStream(paths[0] + "\\" + (index + 1), fileMode, FileAccess.Write, FileShare.None))
                         {
+                            controls.UpdateStatus("Downloading");
+
                             while ((bytesRead = responseStream.Read(buffer, 0, buffer.Length)) > 0)
                             {
                                 totalBytesRead += bytesRead;
 
                                 fileStream.Write(buffer, 0, bytesRead);
-                                UpdateProgress(totalBytesRead, fileInformation.contentLength);
 
-                                Thread.Sleep(segments.Length);
+                                UpdateReceived(totalBytesRead);
+                                UpdateProgressBarValue(totalBytesRead, fileInformation.contentLength);
+
+                                if (Form.state == Form.State.Paused || Form.state == Form.State.Error)        // pausing condition...
+                                {
+                                    break;
+                                }
                             }
                         }
                     }
                 }
             }
-            catch (WebException webException)
+            catch (Exception exception)
             {
-                Debugger.Log(0, "WebException", index + ") " + webException.Message);
+                throw exception;
             }
 
-            threads[index] = null;
+            if (Form.state != Form.State.Paused && Form.state != Form.State.Error)        // when paused...
+            {
+                threads[index] = null;
 
-            Debugger.Log(0, "WebException", "total = " + totalBytesRead + "\nLen = " + fileInformation.contentLength + "\nDifference = " + (fileInformation.contentLength - totalBytesRead));
-
-            AppendSegments();
+                AppendSegments();
+            }
         }
 
         public void Start()
         {
             threads = new Thread[segments.Length];
 
-            for (int i = 0; i < threads.Length; i++)
+            try
             {
-                threads[i] = new Thread(new ParameterizedThreadStart(Start));
-                threads[i].Start(i);
+                for (int i = 0; i < threads.Length; i++)
+                {
+                    threads[i] = new Thread(new ParameterizedThreadStart(Start));
+                    threads[i].Start(i);
+                }
+            }
+            catch (Exception exception)
+            {
+                Form.state = Form.State.Error;
+
+                throw exception;
             }
         }
 
-        private void AppendSegments()
+        private void AppendSegments()       // this method will be modified...
         {
             int countCompletedThreads = 0;
 
@@ -123,36 +149,39 @@ namespace Download_Manager
                 return;
             }
 
-            byte[] buffer = new byte[524288];
-            int bytesRead;
+            controls.UpdateStatus("Appending segments");
 
             totalBytesRead = 0;
 
-            using (FileStream fileOutputStream = new FileStream(fileInformation.saveTo + "\\" + fileInformation.name, FileMode.Append, FileAccess.Write))
+            using (FileStream fileOutputStream = new FileStream(paths[1], FileMode.Append, FileAccess.Write))
             {
                 for (int i = 0; i < segments.Length; i++)
                 {
-                    using (FileStream fileInputStream = new FileStream(fileInformation.saveTo + "\\Temp\\" + fileInformation.name + "\\" + (i + 1), FileMode.Open, FileAccess.Read))
+                    using (FileStream fileInputStream = new FileStream(paths[0] + "\\" + (i + 1), FileMode.Open, FileAccess.Read))
                     {
                         while ((bytesRead = fileInputStream.Read(buffer, 0, buffer.Length)) != 0)
                         {
-                            Debugger.Log(0, "Append", "Appending files... ");
-
                             totalBytesRead += bytesRead;
+
                             fileOutputStream.Write(buffer, 0, bytesRead);
                             fileOutputStream.Flush();
-                            UpdateProgress(totalBytesRead, fileInformation.contentLength);
+                            UpdateProgressBarStatusValue(totalBytesRead, fileInformation.contentLength);
                         }
                     }
                 }
             }
 
-            if (Directory.Exists(fileInformation.saveTo + "\\Temp\\" + fileInformation.name))
+            if (Directory.Exists(paths[0]))
             {
-                Directory.Delete(fileInformation.saveTo + "\\Temp\\" + fileInformation.name, true);
+                Directory.Delete(paths[0], true);
             }
+
+            controls.UpdateStatus("Downloading complete");
         }
 
+        /*
+         * exceptions handled properly...
+         */
         private static HttpWebRequest GetHttpWebRequest(string method, string requestUriString)
         {
             HttpWebRequest httpWebRequest = null;
@@ -175,6 +204,9 @@ namespace Download_Manager
             return httpWebRequest;
         }
 
+        /*
+         * exceptions handled properly...
+         */
         private static HttpWebRequest GetHttpWebRequest(long rangeFrom, long rangeTo, string requestUriString)
         {
             HttpWebRequest httpWebRequest = null;

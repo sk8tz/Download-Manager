@@ -11,12 +11,12 @@ namespace Download_Manager
 
         public FileInformation(string downloadLink, string saveTo)
         {
-            this.downloadLink = downloadLink;
+            this.downloadLink = Uri.UnescapeDataString(downloadLink);
             this.saveTo = saveTo;
 
             try
             {
-                DownloadManager.GetFileInformation(ref contentLength, ref type, ref name, downloadLink);
+                DownloadManager.GetFileInformation(ref contentLength, ref type, ref name, this.downloadLink);
 
                 size = FormatSize(contentLength);
             }
@@ -26,7 +26,7 @@ namespace Download_Manager
             }
         }
 
-        private string FormatSize(long contentLength)
+        public static string FormatSize(long contentLength)
         {
             if (contentLength == 0.0)
             {

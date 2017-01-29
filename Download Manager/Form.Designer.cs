@@ -31,7 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form));
             this.textBoxDownloadLink = new System.Windows.Forms.TextBox();
             this.textBoxSaveTo = new System.Windows.Forms.TextBox();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
             this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.labelDownloadLink = new System.Windows.Forms.Label();
             this.labelSaveTo = new System.Windows.Forms.Label();
@@ -78,16 +78,17 @@
             this.textBoxSaveTo.Text = "F:\\Test";
             this.textBoxSaveTo.TextChanged += new System.EventHandler(this.TextBoxTextChanged);
             // 
-            // progressBar1
+            // progressBar
             // 
-            this.progressBar1.Location = new System.Drawing.Point(15, 220);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(467, 15);
-            this.progressBar1.TabIndex = 16;
+            this.progressBar.Location = new System.Drawing.Point(15, 220);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(467, 15);
+            this.progressBar.TabIndex = 16;
             // 
             // backgroundWorker
             // 
             this.backgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorkerDoWork);
+            this.backgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorkerRunWorkerCompleted);
             // 
             // labelDownloadLink
             // 
@@ -135,7 +136,7 @@
             // labelEmpty
             // 
             this.labelEmpty.Name = "labelEmpty";
-            this.labelEmpty.Size = new System.Drawing.Size(332, 17);
+            this.labelEmpty.Size = new System.Drawing.Size(301, 17);
             this.labelEmpty.Spring = true;
             // 
             // progressBarStatus
@@ -350,7 +351,7 @@
             this.Controls.Add(this.buttonPause);
             this.Controls.Add(this.buttonStart);
             this.Controls.Add(this.labelDownloadLink);
-            this.Controls.Add(this.progressBar1);
+            this.Controls.Add(this.progressBar);
             this.Controls.Add(this.textBoxSaveTo);
             this.Controls.Add(this.textBoxDownloadLink);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -387,7 +388,7 @@
         private CustomButton buttonBrowse;
         private CustomButton buttonPause;
         private CustomButton buttonStart;
-        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.ProgressBar progressBar;
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.ToolStripStatusLabel labelStatus;
         private System.Windows.Forms.ToolStripStatusLabel labelEmpty;
